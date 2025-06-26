@@ -1,16 +1,16 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class SpawnerManager : MonoBehaviour
 {
-    public List<FishMovement> fishMovements = new();
+    public FishManager fishManager;
     public GameObject originPrefab;
     public int count;
     
     public void Start()
     {
-        fishMovements.Clear();
+        Application.targetFrameRate = 560;
+        fishManager.fishMovements.Clear();
         for (var i = 0; i < count; i++)
         {
             var pos = new Vector2(Random.Range(-10f, 10f), Random.Range(-10f, 10f));
@@ -20,8 +20,10 @@ public class SpawnerManager : MonoBehaviour
             {
                 rotation = Quaternion.Euler(0, 180, direction);
             }
-            var fish = Instantiate(originPrefab, pos, rotation, transform);
-            fishMovements.Add(fish.GetComponent<FishMovement>());
+            var go = Instantiate(originPrefab, pos, rotation, transform);
+            var fish = go.GetComponent<FishMovement>();
+            fish.Init(fishManager);
+            fishManager.fishMovements.Add(fish);
         }
     }
 }
