@@ -5,4 +5,120 @@ public class FishManager : MonoBehaviour
 {
     public List<FishMovement> fishMovements = new();
     public FishMovementData fishMovementData;
+    
+    [Header("Grids")]
+    [SerializeField] private float cellSize = 5f;
+    [SerializeField] private float worldSizeX;
+    [SerializeField] private float worldSizeY;
+    [SerializeField] private int gridSizeX;
+    [SerializeField] private int gridSizeY;
+
+    private readonly Dictionary<Vector2Int, List<FishMovement>> _grid = new();
+    
+    private void Awake()
+    {
+        CalculateGridSize();
+    }
+    
+    private void CalculateGridSize()
+    {
+        Camera mainCam = Camera.main;
+        if (mainCam != null)
+        {
+            worldSizeY = mainCam.orthographicSize * 2f;
+            worldSizeX = worldSizeY * mainCam.aspect;
+        }
+
+        gridSizeX = Mathf.CeilToInt(worldSizeX / cellSize);
+        gridSizeY = Mathf.CeilToInt(worldSizeY / cellSize);
+    }
+    
+    public void RegisterFish(FishMovement fish)
+    {
+        Vector2Int gridPos = WorldToGridPosition(fish.transform.position);
+        AddFishToGrid(fish, gridPos);
+    }
+    
+    public void UnregisterFish(FishMovement fish)
+    {
+        Vector2Int gridPos = WorldToGridPosition(fish.transform.position);
+        RemoveFishFromGrid(fish, gridPos);
+    }
+
+    public void UpdateFishPosition(FishMovement fish, Vector3 oldPosition)
+    {
+        Vector2Int oldGridPos = WorldToGridPosition(oldPosition);
+        Vector2Int newGridPos = WorldToGridPosition(fish.transform.position);
+        
+        if (oldGridPos != newGridPos)
+        {
+            RemoveFishFromGrid(fish, oldGridPos);
+            AddFishToGrid(fish, newGridPos);
+        }
+    }
+    
+        private void AddFishToGrid(FishMovement fish, Vector2Int gridPos)
+    {
+        if (!_grid.ContainsKey(gridPos))
+        {
+            _grid[gridPos] = new List<FishMovement>();
+        }
+        
+        _grid[gridPos].Add(fish);
+        fish.CurrentGridPosition = gridPos;
+    }
+
+    private void RemoveFishFromGrid(FishMovement fish, Vector2Int gridPos)
+    {
+        if (_grid.ContainsKey(gridPos))
+        {
+            _grid[gridPos].Remove(fish);
+        }
+    }
+
+    public Vector2Int WorldToGridPosition(Vector3 worldPosition)
+    {
+        int x = Mathf.FloorToInt((worldPosition.x + worldSizeX / 2f) / cellSize);
+        int y = Mathf.FloorToInt((worldPosition.y + worldSizeY / 2f) / cellSize);
+        return new Vector2Int(x, y);
+    }
+
+    public List<FishMovement> GetNearbyFishes(FishMovement fish, float radius, float visionAngle)
+    {
+        List<FishMovement> nearbyFishes = new List<FishMovement>();
+        Vector2Int centerGrid = fish.CurrentGridPosition;
+        float halfVisionRad = visionAngle * 0.5f * Mathf.Deg2Rad;
+        float cosHalfVision = Mathf.Cos(halfVisionRad);
+        Vector2 fishForward = fish.transform.right;
+    
+        int gridRadius = Mathf.CeilToInt(radius / cellSize);
+    
+        for (int x = centerGrid.x - gridRadius; x <= centerGrid.x + gridRadius; x++)
+        {
+            for (int y = centerGrid.y - gridRadius; y <= centerGrid.y + gridRadius; y++)
+            {
+                Vector2Int gridPos = new Vector2Int(x, y);
+                if (_grid.TryGetValue(gridPos, out var value))
+                {
+                    foreach (var otherFish in value)
+                    {
+                        if (otherFish == fish) continue;
+                    
+                        Vector2 toOther = otherFish.transform.position - fish.transform.position;
+                        float sqrDist = toOther.sqrMagnitude;
+                        if (sqrDist > radius * radius) continue;
+                        Vector2 dirToOther = toOther.normalized;
+                        float dot = Vector2.Dot(fishForward, dirToOther);
+                        if (dot < cosHalfVision) continue;
+                    
+                        nearbyFishes.Add(otherFish);
+                    }
+                }
+            }
+        }
+    
+        return nearbyFishes;
+    }
+    
+    
 }
