@@ -1,0 +1,5 @@
+D:/My project/Unity/DOTS/.utmp/RelWithDebInfo/311s3055/arm64-v8a/CMakeFiles/edit_cache.dir
+D:/My project/Unity/DOTS/.utmp/RelWithDebInfo/311s3055/arm64-v8a/CMakeFiles/rebuild_cache.dir
+D:/My project/Unity/DOTS/.utmp/RelWithDebInfo/311s3055/arm64-v8a/GameActivity/CMakeFiles/game.dir
+D:/My project/Unity/DOTS/.utmp/RelWithDebInfo/311s3055/arm64-v8a/GameActivity/CMakeFiles/edit_cache.dir
+D:/My project/Unity/DOTS/.utmp/RelWithDebInfo/311s3055/arm64-v8a/GameActivity/CMakeFiles/rebuild_cache.dir
