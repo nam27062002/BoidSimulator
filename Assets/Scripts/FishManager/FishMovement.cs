@@ -12,10 +12,10 @@ public class FishMovement : MonoBehaviour
     private float _nextPerturbTime;
     private Vector2 _currentPerturbation;
     private float _perturbationEndTime;
-    private float _personalSpace; 
+    private float _personalSpace;
     public Vector2Int CurrentGridPosition { get; set; }
     private Vector3 _lastPosition;
-    
+
     private FishMovementData _fishMovementData;
     public void Init(FishManager fishManager)
     {
@@ -31,7 +31,7 @@ public class FishMovement : MonoBehaviour
         _mainCamera = Camera.main;
         if (_mainCamera == null)
             _mainCamera = FindFirstObjectByType<Camera>();
-        
+
         _fishManager.RegisterFish(this);
         _lastPosition = transform.position;
     }
@@ -46,14 +46,14 @@ public class FishMovement : MonoBehaviour
         UpdatePerturbation();
         Vector2 targetVelocity = CalculateVelocity();
         Velocity = Vector2.SmoothDamp(
-            Velocity, 
-            targetVelocity, 
-            ref _smoothDampVelocity, 
+            Velocity,
+            targetVelocity,
+            ref _smoothDampVelocity,
             _fishMovementData.smoothTime,
             _fishMovementData.maxAcceleration,
             Time.fixedDeltaTime
         );
-        
+
         transform.position += Velocity * Time.fixedDeltaTime;
         CheckScreenBounds();
         LookRotation();
@@ -73,10 +73,10 @@ public class FishMovement : MonoBehaviour
             _perturbationEndTime = Time.time + _fishMovementData.perturbationDuration;
             _nextPerturbTime = Time.time + Random.Range(1f, 3f);
         }
-        
+
         if (Time.time < _perturbationEndTime)
         {
-            _currentPerturbation = Vector2.Lerp(_currentPerturbation, Vector2.zero, 
+            _currentPerturbation = Vector2.Lerp(_currentPerturbation, Vector2.zero,
                 (_fishMovementData.perturbationDuration - (_perturbationEndTime - Time.time)) / _fishMovementData.perturbationDuration);
         }
         else
@@ -108,8 +108,8 @@ public class FishMovement : MonoBehaviour
             }
             Quaternion targetRotation = Quaternion.Euler(0, 0, angle);
             transform.rotation = Quaternion.Slerp(
-                transform.rotation, 
-                targetRotation, 
+                transform.rotation,
+                targetRotation,
                 _fishMovementData.turnSpeed * Time.fixedDeltaTime
             );
         }
@@ -126,13 +126,13 @@ public class FishMovement : MonoBehaviour
         {
             independentDirection = (independentDirection + separationForce * 2f).normalized;
         }
-        
+
         Vector2 combinedForce = (
-            independentDirection * (1f - _fishMovementData.independence) + 
+            independentDirection * (1f - _fishMovementData.independence) +
             (separationForce + alignmentForce + cohesionForce) * _fishMovementData.independence +
             _currentPerturbation
         ).normalized;
-        
+
         return combinedForce * _fishMovementData.speed;
     }
 
@@ -141,7 +141,7 @@ public class FishMovement : MonoBehaviour
         Vector3 newPosition = transform.position;
         bool wrapX = false;
         bool wrapY = false;
-        
+
         if (transform.position.x > XLimit)
         {
             newPosition.x = -XLimit + 0.1f;
@@ -174,22 +174,22 @@ public class FishMovement : MonoBehaviour
     {
         return _fishManager.GetNearbyFishes(this, _fishMovementData.radius, _fishMovementData.visionAngle);
     }
-    
+
     private Vector2 Separation(List<FishMovement> neighbors)
     {
         if (neighbors.Count == 0) return Vector2.zero;
-        
+
         Vector2 steer = Vector2.zero;
         int count = 0;
-        
+
         foreach (var fish in neighbors)
         {
             Vector2 diff = transform.position - fish.transform.position;
             float distance = diff.magnitude;
-            
+
             float personalSpaceFactor = _personalSpace * fish._personalSpace;
             float desiredDistance = personalSpaceFactor * 0.5f;
-            
+
             if (distance < desiredDistance)
             {
                 float strength = Mathf.Clamp01(1.0f - distance / desiredDistance);
@@ -197,39 +197,39 @@ public class FishMovement : MonoBehaviour
                 count++;
             }
         }
-        
+
         if (count > 0)
             steer /= count;
-        
+
         return steer;
     }
 
     private Vector2 Alignment(List<FishMovement> neighbors)
     {
-        if (neighbors.Count == 0 || neighbors.Count > _fishMovementData.maxGroupSize) 
+        if (neighbors.Count == 0 || neighbors.Count > _fishMovementData.maxGroupSize)
             return Vector2.zero;
-        
+
         Vector2 avgDirection = Vector2.zero;
         foreach (var fish in neighbors)
         {
             avgDirection += (Vector2)fish.transform.right;
         }
-        
+
         return avgDirection.normalized;
     }
 
     private Vector2 Cohesion(List<FishMovement> neighbors)
     {
-        if (neighbors.Count == 0 || neighbors.Count > _fishMovementData.maxGroupSize) 
+        if (neighbors.Count == 0 || neighbors.Count > _fishMovementData.maxGroupSize)
             return Vector2.zero;
-        
+
         Vector2 centerOfMass = Vector2.zero;
         foreach (var fish in neighbors)
         {
             centerOfMass += (Vector2)fish.transform.position;
         }
         centerOfMass /= neighbors.Count;
-        
+
         return (centerOfMass - (Vector2)transform.position).normalized;
     }
 }

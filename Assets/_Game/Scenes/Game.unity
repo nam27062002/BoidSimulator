@@ -389,7 +389,6 @@ GameObject:
   - component: {fileID: 546991230}
   - component: {fileID: 546991232}
   - component: {fileID: 546991234}
-  - component: {fileID: 546991233}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -411,6 +410,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fishMovements: []
   fishMovementData: {fileID: 11400000, guid: 8738f6bbef4c71e499c3d66e6c1da267, type: 2}
+  cellSize: 5
+  worldSizeX: 0
+  worldSizeY: 0
+  gridSizeX: 0
+  gridSizeY: 0
 --- !u!4 &546991231
 Transform:
   m_ObjectHideFlags: 0
@@ -439,19 +443,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   smoothingFactor: 0.1
---- !u!114 &546991233
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 546991229}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2daeebfec42427bb4751bbc086e99ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cellSize: 5
 --- !u!114 &546991234
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -466,7 +457,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fishManager: {fileID: 546991230}
   originPrefab: {fileID: 3950552562144888377, guid: ae8b5b5851cb383498bf463a285b78f3, type: 3}
-  count: 300
+  count: 1000
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
