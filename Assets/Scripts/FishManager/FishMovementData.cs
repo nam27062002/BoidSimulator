@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "FishMovementData", menuName = "ScriptableObjects/FishMovementData", order = 1)]
+[CreateAssetMenu(fileName = "FishMovementData", menuName = "ScriptableObjects/FishMovementData")]
 public class FishMovementData : ScriptableObject
 {
     [Header("Movement Settings")]

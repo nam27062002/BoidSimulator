@@ -5,7 +5,7 @@ using UnityEditor;
 #endif
 public class FishManager : MonoBehaviour
 {
-    public List<FishMovement> fishMovements = new();
+    public List<FishMovements> fishMovements = new();
     public FishMovementData fishMovementData;
 
     [Header("Grids")] [SerializeField] private float cellSize = 5f;
@@ -14,7 +14,7 @@ public class FishManager : MonoBehaviour
     [SerializeField] private int gridSizeX;
     [SerializeField] private int gridSizeY;
 
-    private readonly Dictionary<Vector2Int, List<FishMovement>> _grid = new();
+    private readonly Dictionary<Vector2Int, List<FishMovements>> _grid = new();
 
     private void Awake()
     {
@@ -34,19 +34,19 @@ public class FishManager : MonoBehaviour
         gridSizeY = Mathf.CeilToInt(worldSizeY / cellSize);
     }
 
-    public void RegisterFish(FishMovement fish)
+    public void RegisterFish(FishMovements fish)
     {
         Vector2Int gridPos = WorldToGridPosition(fish.transform.position);
         AddFishToGrid(fish, gridPos);
     }
 
-    public void UnregisterFish(FishMovement fish)
+    public void UnregisterFish(FishMovements fish)
     {
         Vector2Int gridPos = WorldToGridPosition(fish.transform.position);
         RemoveFishFromGrid(fish, gridPos);
     }
 
-    public void UpdateFishPosition(FishMovement fish, Vector3 oldPosition)
+    public void UpdateFishPosition(FishMovements fish, Vector3 oldPosition)
     {
         Vector2Int oldGridPos = WorldToGridPosition(oldPosition);
         Vector2Int newGridPos = WorldToGridPosition(fish.transform.position);
@@ -58,18 +58,18 @@ public class FishManager : MonoBehaviour
         }
     }
 
-    private void AddFishToGrid(FishMovement fish, Vector2Int gridPos)
+    private void AddFishToGrid(FishMovements fish, Vector2Int gridPos)
     {
         if (!_grid.ContainsKey(gridPos))
         {
-            _grid[gridPos] = new List<FishMovement>();
+            _grid[gridPos] = new List<FishMovements>();
         }
 
         _grid[gridPos].Add(fish);
         fish.CurrentGridPosition = gridPos;
     }
 
-    private void RemoveFishFromGrid(FishMovement fish, Vector2Int gridPos)
+    private void RemoveFishFromGrid(FishMovements fish, Vector2Int gridPos)
     {
         if (_grid.ContainsKey(gridPos))
         {
@@ -84,9 +84,9 @@ public class FishManager : MonoBehaviour
         return new Vector2Int(x, y);
     }
 
-    public List<FishMovement> GetNearbyFishes(FishMovement fish, float radius, float visionAngle)
+    public List<FishMovements> GetNearbyFishes(FishMovements fish, float radius, float visionAngle)
     {
-        List<FishMovement> nearbyFishes = new List<FishMovement>();
+        List<FishMovements> nearbyFishes = new List<FishMovements>();
         Vector2Int centerGrid = fish.CurrentGridPosition;
         float halfVisionRad = visionAngle * 0.5f * Mathf.Deg2Rad;
         float cosHalfVision = Mathf.Cos(halfVisionRad);
