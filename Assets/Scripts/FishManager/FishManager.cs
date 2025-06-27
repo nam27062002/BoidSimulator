@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 public class FishManager : MonoBehaviour
 {
     public List<FishMovement> fishMovements = new();
     public FishMovementData fishMovementData;
 
-    [Header("Grids")]
-    [SerializeField] private float cellSize = 5f;
+    [Header("Grids")] [SerializeField] private float cellSize = 5f;
     [SerializeField] private float worldSizeX;
     [SerializeField] private float worldSizeY;
     [SerializeField] private int gridSizeX;
@@ -120,5 +121,54 @@ public class FishManager : MonoBehaviour
         return nearbyFishes;
     }
 
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        float drawWorldSizeX = worldSizeX;
+        float drawWorldSizeY = worldSizeY;
 
+        if (!Application.isPlaying)
+        {
+            Camera sceneCam = Camera.main;
+            SceneView sceneView = SceneView.lastActiveSceneView;
+            if (sceneView != null) sceneCam = sceneView.camera;
+
+            if (sceneCam != null && sceneCam.orthographic)
+            {
+                drawWorldSizeY = sceneCam.orthographicSize * 2f;
+                drawWorldSizeX = drawWorldSizeY * sceneCam.aspect;
+            }
+        }
+        if (drawWorldSizeX <= 0 || drawWorldSizeY <= 0) return;
+        Gizmos.color = Color.cyan;
+        int cellsX = Mathf.CeilToInt(drawWorldSizeX / cellSize);
+        int cellsY = Mathf.CeilToInt(drawWorldSizeY / cellSize);
+        for (int x = 0; x <= cellsX; x++)
+        {
+            float xPos = -drawWorldSizeX / 2 + x * cellSize;
+            Vector3 start = new Vector3(xPos, -drawWorldSizeY / 2, 0);
+            Vector3 end = new Vector3(xPos, drawWorldSizeY / 2, 0);
+            Gizmos.DrawLine(start, end);
+        }
+        
+        for (int y = 0; y <= cellsY; y++)
+        {
+            float yPos = -drawWorldSizeY / 2 + y * cellSize;
+            Vector3 start = new Vector3(-drawWorldSizeX / 2, yPos, 0);
+            Vector3 end = new Vector3(drawWorldSizeX / 2, yPos, 0);
+            Gizmos.DrawLine(start, end);
+        }
+        
+        Gizmos.color = Color.red;
+        Vector3 bottomLeft = new Vector3(-drawWorldSizeX / 2, -drawWorldSizeY / 2, 0);
+        Vector3 bottomRight = new Vector3(drawWorldSizeX / 2, -drawWorldSizeY / 2, 0);
+        Vector3 topLeft = new Vector3(-drawWorldSizeX / 2, drawWorldSizeY / 2, 0);
+        Vector3 topRight = new Vector3(drawWorldSizeX / 2, drawWorldSizeY / 2, 0);
+
+        Gizmos.DrawLine(bottomLeft, bottomRight);
+        Gizmos.DrawLine(bottomRight, topRight);
+        Gizmos.DrawLine(topRight, topLeft);
+        Gizmos.DrawLine(topLeft, bottomLeft);
+    }
+#endif
 }
