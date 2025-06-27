@@ -181,7 +181,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 50
+  orthographic size: 100
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -534,7 +534,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 5700094762935025747, guid: 32c597be5981ba14cb0216d62989d169, type: 3}
-  boidCount: 10000
+  boidCount: 20000
   listBoidVariable: {fileID: 11400000, guid: d142c89286ad3e748b5c7ddfbe5c21ae, type: 2}
 --- !u!114 &1134620282
 MonoBehaviour:
@@ -566,6 +566,9 @@ MonoBehaviour:
   radius: 2
   visionAngle: 270
   turnSpeed: 10
+  separationWeight: 1.7
+  alignmentWeight: 0.1
+  cohesionWeight: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

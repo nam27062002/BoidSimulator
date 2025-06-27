@@ -12,3 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69502811957f4b3281253e7a2a074a59, type: 3}
   m_Name: ListBoidVariableJob
   m_EditorClassIdentifier: 
+  boidDatas: []
+  matrices: []
+  prefabScale: {x: 0, y: 0, z: 0}
+  prefabRotation: {x: 0, y: 0, z: 0, w: 0}
+  prefabUp: {x: 0, y: 0, z: 0}

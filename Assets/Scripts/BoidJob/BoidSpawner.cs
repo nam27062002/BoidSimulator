@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using System.Collections.Generic;
 using Random = UnityEngine.Random;
@@ -59,11 +58,11 @@ namespace BoidJob
         {
             var meshFilter = prefab.GetComponentInChildren<MeshFilter>();
             var meshRenderer = prefab.GetComponentInChildren<MeshRenderer>();
-            
+
             _boidMesh = meshFilter.sharedMesh;
             _boidMaterial = new Material(meshRenderer.sharedMaterial);
             _boidMaterial.enableInstancing = true;
-            
+
             listBoidVariable.matrices = new Matrix4x4[boidCount];
             _propertyBlock = new MaterialPropertyBlock();
         }
@@ -79,7 +78,7 @@ namespace BoidJob
                     Random.Range(_minY, _maxY),
                     0
                 );
-                
+
                 float direction = Random.Range(0f, 360f);
                 listBoidVariable.boidDatas[i].rotation = Quaternion.Euler(Vector3.forward * direction) * prefab.transform.localRotation;
                 listBoidVariable.boidDatas[i].velocity = listBoidVariable.boidDatas[i].rotation * Vector3.forward;
@@ -90,7 +89,7 @@ namespace BoidJob
                 );
             }
         }
-        
+
         private void RenderBoids()
         {
             for (int i = 0; i < boidCount; i += 1023)
